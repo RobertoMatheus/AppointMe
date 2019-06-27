@@ -1,3 +1,4 @@
+
 import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
@@ -17,18 +18,21 @@ import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 
-public class Interface {
+/**
+ *
+ * @author Aluno
+ */
+public class Prog {
 
-  
     static int width = 500;
     static int height = 600;
     private static JPanel substrate;
     private static JPanel upperLayer;
+    private static Timer timer;
 
     public static void main(String ags[]) {
 
@@ -37,21 +41,18 @@ public class Interface {
         
         //Adiciona Layers
         JLayeredPane layeredPane = new JLayeredPane();
-        
+
         //Panels
         JPanel mainLayer = new JPanel();
         substrate = new JPanel();
         upperLayer = new JPanel();
-        
-        JTextField texto = new JTextField();
+
+        JPasswordField texto = new JPasswordField();
 
         //Timer 1000= 1 segundo
-        Timer timer = new Timer(5000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                substrate.setVisible(true);
-                upperLayer.setVisible(true);
-            }
+        timer = new Timer(5000, (ActionEvent e) -> {
+            substrate.setVisible(true);
+            upperLayer.setVisible(true);
         });
 
         //Timer de inatividae
@@ -64,7 +65,7 @@ public class Interface {
                 Object source = event.getSource();
                 if (source instanceof Component) {
                     Component comp = (Component) source;
-                    Window win = null;
+                    Window win;
                     if (comp instanceof Window) {
                         win = (Window) comp;
                     } else {
@@ -83,7 +84,6 @@ public class Interface {
 
         mainLayer.setBounds(0, 0, width, height);
 
-        
         substrate = new JPanel() {
             @Override
             public void paint(Graphics g) {
@@ -92,14 +92,9 @@ public class Interface {
             }
         };
 
-        
-        ActionListener locker = new ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-
-                substrate.setVisible(true);
-                upperLayer.setVisible(true);
-            }
+        ActionListener locker = (java.awt.event.ActionEvent e) -> {
+            substrate.setVisible(true);
+            upperLayer.setVisible(true);
         };
 
         String pass = "123";
@@ -107,24 +102,21 @@ public class Interface {
         texto.setColumns(5);
         Font bigFont = texto.getFont().deriveFont(Font.PLAIN, 15f);
         texto.setFont(bigFont);
-        ActionListener unlock = new ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                //Verificar senha
-                if (texto.getText().contentEquals(pass)) {
-                    substrate.setVisible(false);
-                    upperLayer.setVisible(false);
-                } else {
-                    System.out.println("Senha incorreta");
-                }
-
+        ActionListener unlock = (java.awt.event.ActionEvent e) -> {
+            //Verificar senha
+            if (texto.getText().contentEquals(pass)) {
+                substrate.setVisible(false);
+                upperLayer.setVisible(false);
+                texto.setText("");
+            } else {
+                JFrame senhaIncorreta = new JFrame();
+                JOptionPane.showMessageDialog(senhaIncorreta, "Senha incorreta");
             }
         };
 
-        
         JButton unlockButton = new JButton("Unlock");
         unlockButton.addActionListener(unlock);
-
+        JButton botaoIncrivel = new JButton("Botao Incrivel");
         
         substrate.setOpaque(false);
         substrate.setBounds(0, 0, width, height);
@@ -132,15 +124,13 @@ public class Interface {
         });
         substrate.setVisible(false);
 
-        
-
         upperLayer = new JPanel();
         upperLayer.setBounds(width / 2 - 50, height / 2 - 50, 100, 100);
         upperLayer.setBorder(new LineBorder(Color.BLACK, 1));
         upperLayer.add(texto);
         upperLayer.add(unlockButton);
         upperLayer.setVisible(false);
-
+        mainLayer.add(botaoIncrivel);
         
         layeredPane.setLayout(null);
         layeredPane.setLayer(mainLayer, 0);
@@ -149,7 +139,7 @@ public class Interface {
         layeredPane.add(substrate);
         layeredPane.setLayer(upperLayer, 2);
         layeredPane.add(upperLayer);
-
+        
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setBounds((screenSize.width - width) / 2, (screenSize.height - height) / 2, width, height);
@@ -157,5 +147,5 @@ public class Interface {
         frame.setVisible(true);
 
     }
-  
+
 }
